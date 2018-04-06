@@ -535,7 +535,6 @@ setup_args['extras_require'] = {
         'sphinxcontrib-spelling',
         'pyenchant',
         'docutils>=0.8',
-        'sphinx-jinja',
         'towncrier',
     ],
 }

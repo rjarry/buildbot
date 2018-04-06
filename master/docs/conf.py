@@ -55,8 +55,8 @@ extensions = [
     'sphinx.ext.extlinks',
     'bbdocs.ext',
     'bbdocs.highlighterrors',
+    'bbdocs.jinja',
     'sphinxcontrib.blockdiag',
-    'sphinxcontrib.jinja',
 ]
 todo_include_todos = True
 
