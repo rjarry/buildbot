@@ -59,6 +59,17 @@ def validateMasterOption(master):
         raise usage.UsageError("master must have the form 'hostname:port'")
 
 
+def timeoutCoerce(value):
+    try:
+        value = int(value)
+        if value > 0:
+            return value
+    except ValueError:
+        pass
+    raise usage.UsageError('error: --timeout: %r is not a positive integer'
+                           % value)
+
+
 class UpgradeMasterOptions(base.BasedirMixin, base.SubcommandOptions):
     subcommandFunction = "buildbot.scripts.upgrade_master.upgradeMaster"
     optFlags = [
@@ -179,6 +190,12 @@ class StopOptions(base.BasedirMixin, base.SubcommandOptions):
         ["clean", "c", "Clean shutdown master"],
         ["no-wait", None, "Don't wait for complete master shutdown"],
     ]
+    optParameters = [
+        ['timeout', 't', 10,
+         'The amount of time the script waits for the master to stop until '
+         'it declares the operation as failure',
+         timeoutCoerce],
+    ]
 
     def getSynopsis(self):
         return "Usage:    buildbot stop [<basedir>]"
@@ -192,13 +209,20 @@ class RestartOptions(base.BasedirMixin, base.SubcommandOptions):
         ["clean", "c", "Clean shutdown master"],
     ]
     optParameters = [
-        ['start_timeout', None, None,
+        ['timeout', 't', 10,
          'The amount of time the script waits for the master to restart until '
-         'it declares the operation as failure'],
+         'it declares the operation as failure',
+         timeoutCoerce],
+        ['start_timeout', None, None, 'Alias for --timeout.'],
     ]
 
     def getSynopsis(self):
         return "Usage:    buildbot restart [<basedir>]"
+
+    def postOptions(self):
+        base.SubcommandOptions.postOptions(self)
+        if self['start_timeout'] is not None:
+            self['timeout'] = timeoutCoerce(self['start_timeout'])
 
 
 class StartOptions(base.BasedirMixin, base.SubcommandOptions):
@@ -208,19 +232,32 @@ class StartOptions(base.BasedirMixin, base.SubcommandOptions):
         ['nodaemon', None, "Don't daemonize (stay in foreground)"],
     ]
     optParameters = [
-        ['start_timeout', None, None,
-         'The amount of time the script waits for the master to start until it '
-         'declares the operation as failure'],
+        ['timeout', 't', 10,
+         'The amount of time the script waits for the master to start until '
+         'it declares the operation as failure',
+         timeoutCoerce],
+        ['start_timeout', None, None, 'Alias for --timeout.'],
     ]
 
     def getSynopsis(self):
         return "Usage:    buildbot start [<basedir>]"
+
+    def postOptions(self):
+        base.SubcommandOptions.postOptions(self)
+        if self['start_timeout'] is not None:
+            self['timeout'] = timeoutCoerce(self['start_timeout'])
 
 
 class ReconfigOptions(base.BasedirMixin, base.SubcommandOptions):
     subcommandFunction = "buildbot.scripts.reconfig.reconfig"
     optFlags = [
         ['quiet', 'q', "Don't display log messages about reconfiguration"],
+    ]
+    optParameters = [
+        ['timeout', 't', 10,
+         'The amount of time the script waits for the master to re-read its '
+         'configuration file until it declares the operation as failure',
+         timeoutCoerce],
     ]
 
     def getSynopsis(self):

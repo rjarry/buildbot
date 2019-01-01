@@ -71,10 +71,10 @@ def stop(config, signame="TERM", wait=None):
 
     time.sleep(0.1)
 
-    # poll once per second until twistd.pid goes away, up to 10 seconds,
+    # poll once per second until twistd.pid goes away, up to --timeout seconds,
     # unless we're doing a clean stop, in which case wait forever
     count = 0
-    while count < 10 or config['clean']:
+    while count < config['timeout'] or config['clean']:
         try:
             os.kill(pid, 0)
         except OSError:
