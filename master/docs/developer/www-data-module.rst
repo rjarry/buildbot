@@ -10,11 +10,13 @@ Its main purpose is to handle the 3 way binding.
 2 way binding is the angular MVVM concept, which seamlessly synchronise the view and the model.
 Here we introduce an additional way of synchronisation, which is from the server to the model.
 
-.. blockdiag::
+::
 
-    blockdiag {
-      View <- Model <- Server;
-    }
+   +----------+     +-----------+     +----------+
+   |          |     |           |     |          |
+   |   View   <-----|   Model   <-----|  Server  |
+   |          |     |           |     |          |
+   +----------+     +-----------+     +----------+
 
 We use the message queue and the websocket interfaces to maintain synchronisation between the server and the client.
 
@@ -44,12 +46,20 @@ For example the Change wrapper decodes the author name and email from the "autho
 
 Each wrapper class also has specific access method, which allow to access more data from the REST hierarchy.
 
-.. blockdiag::
+::
 
-    blockdiag {
-      data.getBuilds -> Collection -> Builds -> b.getSteps -> Collection -> Steps;
-    }
-
+   +----------------+    +------------+      +--------+     +------------+
+   |                |    |            |      |        |     |            |
+   | data.getBuilds |----> Collection |--+---> Builds |-----> b.getSteps |--.
+   |                |    |            |  |   |        |     |            |  |
+   +----------------+    +-----^------+  |   +--------+     +------------+  |
+                               |         |   +-------+                      |
+                               |         |   |       |                      |
+                               |         `---> Steps |                      |
+                               |             |       |                      |
+                               |             +-------+                      |
+                               |                                            |
+                               `--------------------------------------------'
 
 Installation
 ~~~~~~~~~~~~

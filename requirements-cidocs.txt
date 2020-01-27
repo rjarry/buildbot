@@ -1,5 +1,4 @@
 Sphinx==2.0.1 # pyup: ignore
-sphinxcontrib-blockdiag==1.5.5
 sphinxcontrib-spelling==4.3.0
 sphinxcontrib-websupport==1.1.2
 Pygments==2.4.2
